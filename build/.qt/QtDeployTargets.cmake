@@ -1,2 +1,0 @@
-set(__QT_DEPLOY_TARGET_NeutronColl_FILE /Users/tcontrer/Development/NeutronGenerator/NeutronCollimator/build/NeutronColl)
-set(__QT_DEPLOY_TARGET_NeutronColl_TYPE EXECUTABLE)

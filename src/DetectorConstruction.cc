@@ -1,26 +1,9 @@
 //
 // ********************************************************************
-// * License and Disclaimer                                           *
-// *                                                                  *
-// * The  Geant4 software  is  copyright of the Copyright Holders  of *
-// * the Geant4 Collaboration.  It is provided  under  the terms  and *
-// * conditions of the Geant4 Software License,  included in the file *
-// * LICENSE and available at  http://cern.ch/geant4/license .  These *
-// * include a list of copyright holders.                             *
-// *                                                                  *
-// * Neither the authors of this software system, nor their employing *
-// * institutes,nor the agencies providing financial support for this *
-// * work  make  any representation or  warranty, express or implied, *
-// * regarding  this  software system or assume any liability for its *
-// * use.  Please see the license in the file  LICENSE  and URL above *
-// * for the full disclaimer and the limitation of liability.         *
-// *                                                                  *
-// * This  code  implementation is the result of  the  scientific and *
-// * technical work of the GEANT4 collaboration.                      *
-// * By using,  copying,  modifying or  distributing the software (or *
-// * any work based  on the software)  you  agree  to acknowledge its *
-// * use  in  resulting  scientific  publications,  and indicate your *
-// * acceptance of all terms of the Geant4 Software license.          *
+// * Author: Taylor Contreras                                         *
+// * Date: 2024-06-10                                                 *
+// * Description: Detector construction for the NeutronCollimator     *
+// * simulation.                                                      *
 // ********************************************************************
 //
 /// \file DetectorConstruction.cc
@@ -129,7 +112,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
   // Create a plane 30cm from the small end of the tapered cylinder
   G4Material* plane_mat = nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE"); // PVC material for the plane
-  G4double plane_distance_from_small_end = 80.0 * cm;
+  G4double plane_distance_from_small_end = 1.0 * cm;
   G4double plane_thickness = 0.1 * cm;  // Thickness of the plane
   G4double plane_z_position = (taperedCylinder_height / 2) + plane_distance_from_small_end + plane_thickness / 2;  // Position of the plane along the z-axis
   G4double plane_sizeXY = 500.0 * cm;  // Size of the plane
