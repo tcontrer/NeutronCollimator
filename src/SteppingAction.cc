@@ -18,6 +18,8 @@
 #include "G4LogicalVolume.hh"
 #include "G4RunManager.hh"
 #include "G4Step.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4ThreeVector.hh"
 
 namespace NeutronColl
 {
@@ -37,15 +39,38 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
   }
 
   // get volume of the current step
-  G4LogicalVolume* volume =
+  G4LogicalVolume* prestep_volume =
     step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
 
-  // check if we are in scoring volume
-  if (volume != fScoringVolume) return;
+  auto postStepTouchable = step->GetPostStepPoint()->GetTouchableHandle();
+  auto postStepVolume = postStepTouchable->GetVolume();
+  G4LogicalVolume* poststep_volume = postStepVolume ? postStepVolume->GetLogicalVolume() : nullptr;
 
-  // collect energy deposited in this step
-  G4double edepStep = step->GetTotalEnergyDeposit();
-  fEventAction->AddEdep(edepStep);
+  // check if we are in scoring volume
+  if (prestep_volume == fScoringVolume) {
+    // collect energy deposited in this step
+    G4double edepStep = step->GetTotalEnergyDeposit();
+    fEventAction->AddEdep(edepStep);
+  }
+
+  //std::cout << "About to check poststep volume..." << std::endl;
+  // Check if the volume has changed from the pre-step to the post-step point and is not null
+  if (poststep_volume) {
+    //std::cout << "Post-step volume: " << poststep_volume->GetName() << std::endl;
+    if (poststep_volume != prestep_volume) {
+      //std::cout << "Volume changed from " << prestep_volume->GetName() << " to " << poststep_volume->GetName() << std::endl;
+      // Check if the post-step volume is the scoring volume
+      if (poststep_volume == fScoringVolume) {
+        // For TextGen output, we need the following information:
+        fEventAction->PushbackParticleID(step->GetTrack()->GetDefinition()->GetPDGEncoding());
+        fEventAction->PushbackMotherID(step->GetTrack()->GetParentID());
+        fEventAction->PushbackMomentum(step->GetTrack()->GetMomentum());
+        fEventAction->PushbackEnergy(step->GetTrack()->GetTotalEnergy());
+        fEventAction->PushbackPosition(step->GetTrack()->GetPosition());
+      }
+    }
+  }
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

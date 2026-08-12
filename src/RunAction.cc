@@ -21,6 +21,7 @@
 #include "G4RunManager.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
+#include <fstream>
 
 namespace NeutronColl
 {
@@ -57,6 +58,13 @@ void RunAction::BeginOfRunAction(const G4Run*)
   // reset accumulables to their initial values
   G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
   accumulableManager->Reset();
+
+  // Check if file exists and if so, delete it and create a new one
+  std::ifstream infile(fOutputFileName);
+  if (infile.good()) {
+    infile.close();
+    std::remove(fOutputFileName.c_str());
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

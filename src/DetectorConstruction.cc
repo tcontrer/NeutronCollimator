@@ -119,25 +119,25 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   //
   // Create a wall representing NOvA
   //
-  G4Material* plane_mat = nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE"); // PVC material for the plane
-  G4double plane_distance_from_small_end = 1.0 * cm;
-  G4double plane_thickness = 10. * cm;  // Thickness of the plane
-  G4double plane_z_position = (taperedCylinder_height / 2) + plane_distance_from_small_end + plane_thickness / 2;  // Position of the plane along the z-axis
-  G4double plane_sizeXY = 500.0 * cm;  // Size of the plane
-  auto solidPlane = new G4Box("Plane", plane_sizeXY / 2, plane_sizeXY / 2, plane_thickness / 2);  // Thin plane
-  auto logicPlane = new G4LogicalVolume(solidPlane, plane_mat, "Plane");
-  G4ThreeVector positionPlane(0, 0, plane_z_position);
-  new G4PVPlacement(nullptr, positionPlane, logicPlane, "Plane", logicEnv, false, 0, checkOverlaps);
+  G4Material* nova_mat = nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE"); // PVC material for the nova
+  G4double nova_distance_from_small_end = 1.0 * cm;
+  G4double nova_thickness = 10. * cm;  // Thickness of the nova
+  G4double nova_z_position = (taperedCylinder_height / 2) + nova_distance_from_small_end + nova_thickness / 2;  // Position of the nova along the z-axis
+  G4double nova_sizeXY = 500.0 * cm;  // Size of the nova
+  auto solidnova = new G4Box("Nova", nova_sizeXY / 2, nova_sizeXY / 2, nova_thickness / 2);  // Thin nova
+  auto logicnova = new G4LogicalVolume(solidnova, nova_mat, "Nova");
+  G4ThreeVector positionnova(0, 0, nova_z_position);
+  new G4PVPlacement(nullptr, positionnova, logicnova, "Nova", logicEnv, false, 0, checkOverlaps);
 
-  // Edit visualization attributes for the plane
-  G4VisAttributes* planeVisAttr = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0));  // Green color
-  planeVisAttr->SetVisibility(true);
-  logicPlane->SetVisAttributes(planeVisAttr);
+  // Edit visualization attributes for the nova
+  G4VisAttributes* novaVisAttr = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0));  // Green color
+  novaVisAttr->SetVisibility(true);
+  logicnova->SetVisAttributes(novaVisAttr);
 
 
   // Set NOvA detector plane as scoring volume
   //
-  fScoringVolume = logicPlane;
+  fScoringVolume = logicnova;
 
   //
   // always return the physical World

@@ -2,7 +2,7 @@
 // ********************************************************************
 // * Author: Taylor Contreras                                         *
 // * Date: 2024-06-10                                                 *
-// * Description: Actions for the NeutronCollimator simulation.       *
+// * Description: Run action for the NeutronCollimator simulation.    *
 // ********************************************************************
 //
 /// \file RunAction.hh
@@ -37,10 +37,12 @@ class RunAction : public G4UserRunAction
     void EndOfRunAction(const G4Run*) override;
 
     void AddEdep(G4double edep);
+    const std::string& GetOutputFileName() const { return fOutputFileName; }
 
   private:
     G4Accumulable<G4double> fEdep = 0.;
     G4Accumulable<G4double> fEdep2 = 0.;
+    std::string fOutputFileName = "/Users/tcontrer/Development/NeutronGenerator/NeutronCollimator/textgen_output.txt";
 };
 
 }  // namespace NeutronColl
