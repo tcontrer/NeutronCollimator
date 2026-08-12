@@ -20,6 +20,8 @@
 #include "G4Trd.hh"
 #include "G4UnionSolid.hh"
 #include "G4SubtractionSolid.hh"
+#include "G4VisAttributes.hh"
+#include "G4Colour.hh"
 
 namespace NeutronColl
 {
@@ -109,11 +111,17 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4ThreeVector positionTaperedCylinder(0, 0, 0);  // Position of the tapered cylinder
   new G4PVPlacement(nullptr, positionTaperedCylinder, logicTaperedCylinderWithHole, "TaperedCylinderWithHole", logicEnv, false, 0, checkOverlaps);
 
+    // Edit visualization attributes for the tapered cylinder
+  G4VisAttributes* taperedCylinderVisAttr = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));  // Gray color
+  taperedCylinderVisAttr->SetVisibility(true);
+  logicTaperedCylinderWithHole->SetVisAttributes(taperedCylinderVisAttr);
 
-  // Create a plane 30cm from the small end of the tapered cylinder
+  //
+  // Create a wall representing NOvA
+  //
   G4Material* plane_mat = nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE"); // PVC material for the plane
   G4double plane_distance_from_small_end = 1.0 * cm;
-  G4double plane_thickness = 0.1 * cm;  // Thickness of the plane
+  G4double plane_thickness = 10. * cm;  // Thickness of the plane
   G4double plane_z_position = (taperedCylinder_height / 2) + plane_distance_from_small_end + plane_thickness / 2;  // Position of the plane along the z-axis
   G4double plane_sizeXY = 500.0 * cm;  // Size of the plane
   auto solidPlane = new G4Box("Plane", plane_sizeXY / 2, plane_sizeXY / 2, plane_thickness / 2);  // Thin plane
@@ -121,10 +129,15 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4ThreeVector positionPlane(0, 0, plane_z_position);
   new G4PVPlacement(nullptr, positionPlane, logicPlane, "Plane", logicEnv, false, 0, checkOverlaps);
 
+  // Edit visualization attributes for the plane
+  G4VisAttributes* planeVisAttr = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0));  // Green color
+  planeVisAttr->SetVisibility(true);
+  logicPlane->SetVisAttributes(planeVisAttr);
 
-  // Set Shape2 as scoring volume
+
+  // Set NOvA detector plane as scoring volume
   //
-  fScoringVolume = logicTaperedCylinderWithHole;
+  fScoringVolume = logicPlane;
 
   //
   // always return the physical World
