@@ -1,7 +1,7 @@
 //
 // ********************************************************************
 // * Author: Taylor Contreras                                         *
-// * Date: 2024-06-10                                                 *
+// * Date: 2026-09-12                                                 *
 // * Description: Main for the NeutronCollimator simulation.       *
 // ********************************************************************
 //
@@ -11,6 +11,7 @@
 #include "ActionInitialization.hh"
 #include "DetectorConstruction.hh"
 #include "QBBC.hh"
+#include "FTFP_BERT_HP.hh"
 
 #include "G4RunManagerFactory.hh"
 #include "G4SteppingVerbose.hh"
@@ -49,7 +50,7 @@ int main(int argc, char** argv)
   runManager->SetUserInitialization(new DetectorConstruction());
 
   // Physics list
-  auto physicsList = new QBBC;
+  auto physicsList = new FTFP_BERT_HP; // Use the FTFP_BERT_HP physics list for high precision neutron interactions below 20MeV
   physicsList->SetVerboseLevel(1);
   runManager->SetUserInitialization(physicsList);
 
