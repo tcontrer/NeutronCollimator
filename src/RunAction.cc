@@ -16,7 +16,7 @@
 #include "G4AccumulableManager.hh"
 #include "G4LogicalVolume.hh"
 #include "G4ParticleDefinition.hh"
-#include "G4ParticleGun.hh"
+#include "G4GeneralParticleSource.hh"
 #include "G4Run.hh"
 #include "G4RunManager.hh"
 #include "G4SystemOfUnits.hh"
@@ -102,10 +102,10 @@ void RunAction::EndOfRunAction(const G4Run* run)
     G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
   G4String runCondition;
   if (generatorAction) {
-    const G4ParticleGun* particleGun = generatorAction->GetParticleGun();
-    runCondition += particleGun->GetParticleDefinition()->GetParticleName();
+    const G4GeneralParticleSource* GeneralParticleSource = generatorAction->GetGeneralParticleSource();
+    runCondition += GeneralParticleSource->GetParticleDefinition()->GetParticleName();
     runCondition += " of ";
-    G4double particleEnergy = particleGun->GetParticleEnergy();
+    G4double particleEnergy = GeneralParticleSource->GetParticleEnergy();
     runCondition += G4BestUnit(particleEnergy, "Energy");
   }
 

@@ -14,7 +14,7 @@
 #include "G4Box.hh"
 #include "G4LogicalVolume.hh"
 #include "G4LogicalVolumeStore.hh"
-#include "G4ParticleGun.hh"
+#include "G4GeneralParticleSource.hh"
 #include "G4ParticleTable.hh"
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
@@ -26,23 +26,21 @@ namespace NeutronColl
 
 PrimaryGeneratorAction::PrimaryGeneratorAction()
 {
-  G4int n_particle = 1;
-  fParticleGun = new G4ParticleGun(n_particle);
+  //G4int n_particle = 1;
+  fGeneralParticleSource = new G4GeneralParticleSource();
 
   // default particle kinematic
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   G4String particleName;
-  G4ParticleDefinition* particle = particleTable->FindParticle(particleName = "gamma");
-  fParticleGun->SetParticleDefinition(particle);
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
-  fParticleGun->SetParticleEnergy(6. * MeV);
+  G4ParticleDefinition* particle = particleTable->FindParticle(particleName = "neutron");
+  fGeneralParticleSource->SetParticleDefinition(particle);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
 {
-  delete fParticleGun;
+  delete fGeneralParticleSource;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -81,9 +79,9 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
   G4double y0 = size * envSizeXY * (G4UniformRand() - 0.5);
   G4double z0 = -0.5 * envSizeZ;
 
-  fParticleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0));
+  fGeneralParticleSource->SetParticlePosition(G4ThreeVector(x0, y0, z0));
 
-  fParticleGun->GeneratePrimaryVertex(event);
+  fGeneralParticleSource->GeneratePrimaryVertex(event);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

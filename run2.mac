@@ -12,16 +12,14 @@
 # gamma 6 MeV to the direction (0.,0.,1.)
 # 10000 events
 #
-/gun/particle gamma
-/gun/energy 6 MeV
+/gps/particle neutron
+/gps/energy 14 MeV
+#
+# Make the source produce isotropically
+# and at the given x y z position
+/gps/ang/type iso
+/gps/position 0 0 1 cm
 #
 /run/printProgress 1000
 /run/beamOn 10000
 # 
-# proton 210 MeV to the direction (0.,0.,1.)
-# 10000 events
-#
-/gun/particle proton
-/gun/energy 210 MeV
-#
-/run/beamOn 10000

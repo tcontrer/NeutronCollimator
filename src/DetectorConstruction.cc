@@ -85,36 +85,63 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                     0,  // copy number
                     checkOverlaps);  // overlaps checking
 
+  //
+  // Collimator hole
+  //
+  G4double collimator_length = 76.2 * cm;  
+  G4double hole_width = 5.0 * cm; 
+  G4double hole_height = 3.5 * cm;
+  G4double hole_depth = collimator_length + 0.1 * cm;  // Slightly larger than the actual hole width to ensure proper subtraction
+  auto solidHole = new G4Box("Hole", hole_width / 2, hole_height / 2, hole_depth / 2);
+
 
   //
   // Tapered concrete cylinder with a rectangular hole
   //
-  G4Material* taperedCylinder_mat = nist->FindOrBuildMaterial("G4_CONCRETE");
-  G4double taperedCylinder_radius1 = 21.0/2. * cm;
+  /*G4Material* taperedCylinder_mat = nist->FindOrBuildMaterial("G4_POLYETHYLENE");
+  G4double taperedCylinder_radius1 = 100. *cm; //21.0/2. * cm;
   G4double taperedCylinder_radius2 = 10.0/2. * cm;
-  G4double taperedCylinder_height = 76.2 * cm;
+  G4double taperedCylinder_height = collimator_length;  // Same as the collimator length
   auto solidTaperedCylinder = new G4Cons("TaperedCylinder",
                                           0, taperedCylinder_radius1,   // Rmin1, Rmax1 (bottom, -z end)
                                           0, taperedCylinder_radius2,   // Rmin2, Rmax2 (top, +z end)
                                           taperedCylinder_height / 2,
                                           0, 360 * deg);
 
-  // Create a rectangular hole in the tapered cylinder
-  G4double hole_width = 5.0 * cm; 
-  G4double hole_height = 3.5 * cm;
-  G4double hole_depth = taperedCylinder_height + 0.1 * cm;  // Slightly larger than the actual hole width to ensure proper subtraction
-  auto solidHole = new G4Box("Hole", hole_width / 2, hole_height / 2, hole_depth / 2);
 
   // Combine the tapered cylinder and the hole using a subtraction solid
   G4SubtractionSolid* taperedCylinderWithHole = new G4SubtractionSolid("TaperedCylinderWithHole", solidTaperedCylinder, solidHole);
   auto logicTaperedCylinderWithHole = new G4LogicalVolume(taperedCylinderWithHole, taperedCylinder_mat, "TaperedCylinderWithHole");
-  G4ThreeVector positionTaperedCylinder(0, 0, 0);  // Position of the tapered cylinder
+  G4ThreeVector positionTaperedCylinder(0, 0, 0);  
   new G4PVPlacement(nullptr, positionTaperedCylinder, logicTaperedCylinderWithHole, "TaperedCylinderWithHole", logicEnv, false, 0, checkOverlaps);
 
-    // Edit visualization attributes for the tapered cylinder
+  // Edit visualization attributes for the tapered cylinder
   G4VisAttributes* taperedCylinderVisAttr = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));  // Gray color
   taperedCylinderVisAttr->SetVisibility(true);
   logicTaperedCylinderWithHole->SetVisAttributes(taperedCylinderVisAttr);
+  */
+
+  //
+  // Rectangle with a rectangular hole
+  //
+  
+  G4Material* collimator_mat = nist->FindOrBuildMaterial("G4_POLYETHYLENE");
+  G4double collimator_width = 60. *cm;
+  G4double collimator_height = 60 * cm;
+  G4double collimator_depth = collimator_length;  // Same as the collimator length
+  auto solidCollimator = new G4Box("Collimator", collimator_width / 2, collimator_height / 2, collimator_depth / 2);
+
+  // Combine the collimator and the hole using a subtraction solid
+  G4SubtractionSolid* collimatorWithHole = new G4SubtractionSolid("CollimatorWithHole", solidCollimator, solidHole);
+  auto logicCollimatorWithHole = new G4LogicalVolume(collimatorWithHole, collimator_mat, "CollimatorWithHole");
+  G4ThreeVector positionCollimator(0, 0, 0);  
+  new G4PVPlacement(nullptr, positionCollimator, logicCollimatorWithHole, "CollimatorWithHole", logicEnv, false, 0, checkOverlaps);
+
+  // Edit visualization attributes for the collimator
+  G4VisAttributes* collimatorVisAttr = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));  // Gray color
+  collimatorVisAttr->SetVisibility(true);
+  logicCollimatorWithHole->SetVisAttributes(collimatorVisAttr);
+    
 
   //
   // Create a wall representing NOvA
@@ -122,7 +149,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4Material* nova_mat = nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE"); // PVC material for the nova
   G4double nova_distance_from_small_end = 1.0 * cm;
   G4double nova_thickness = 10. * cm;  // Thickness of the nova
-  G4double nova_z_position = (taperedCylinder_height / 2) + nova_distance_from_small_end + nova_thickness / 2;  // Position of the nova along the z-axis
+  G4double nova_z_position = (collimator_length / 2) + nova_distance_from_small_end + nova_thickness / 2;  // Position of the nova along the z-axis
   G4double nova_sizeXY = 500.0 * cm;  // Size of the nova
   auto solidnova = new G4Box("Nova", nova_sizeXY / 2, nova_sizeXY / 2, nova_thickness / 2);  // Thin nova
   auto logicnova = new G4LogicalVolume(solidnova, nova_mat, "Nova");
