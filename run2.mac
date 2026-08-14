@@ -21,5 +21,16 @@
 /gps/position 0 0 1 cm
 #
 /run/printProgress 1000
+#
+# Define energy as guassian around ~14 MeV
+#/gps/ene/type Gauss
+/gps/ene/type Lin
+/gps/ene/min 13.33 MeV
+/gps/ene/max 14.8 MeV
+#
+# Angular distribution based on P385 data
+/gps/ang/type User
+/gps/hist/type biast # theta distribution
+/control/execute fluxdata_p385.dat
+#
 /run/beamOn 10000
-# 
